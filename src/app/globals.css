@@ -1,0 +1,25 @@
+/* Tailwind directives */
+@import 'tailwindcss';
+
+/* CSS variables for light/dark theme */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-sans: system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #9e69af;
+    --foreground: #a32e2e;
+  }
+}
+
+/* Apply global styles */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  @apply bg-gray-50 text-gray-800;
+}
