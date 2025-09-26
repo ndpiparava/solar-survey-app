@@ -20,6 +20,7 @@ const LanguageSwitch: FC<LanguageSwitchProps> = ({options}) => {
           <SwitchButton
             key={opt}
             active={isActive}
+            type="button"
             onClick={() => setLanguage(opt)}>
             {opt.toUpperCase()}
           </SwitchButton>
