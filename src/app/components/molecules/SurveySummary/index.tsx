@@ -12,23 +12,25 @@ import {
   SurveyDataType,
 } from '@solar/app/shared/types/survey';
 import useSurveySummary from './useSurveySummary';
+import AssessmentSection from '../AssessmentSection';
 
 interface SurveySummaryProps {
   form: SurveyDataType;
 }
 
 const SurveySummary = ({form}: SurveySummaryProps) => {
-  const {fieldConfigs, intl} = useSurveySummary(form);
+  const {fieldConfigs, intl, assessment} = useSurveySummary(form);
 
   return (
     <ResultWrapper>
       <Title>
         <FaSun /> {intl.formatMessage({id: 'form.success.thankYou'})}
       </Title>
+
+      <AssessmentSection assessment={assessment} />
       <Description>
         {intl.formatMessage({id: 'form.success.response'})}
       </Description>
-
       <SummaryList>
         {(Object.keys(form) as (keyof SurveyDataType)[])
           .filter((key): key is SurveyDataKeyType => key !== 'contact')

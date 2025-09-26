@@ -58,6 +58,13 @@ const en: Record<string, string> = {
   info: 'Info',
   warning: 'Warning',
   danger: 'Danger',
+  scoreLabel: 'Score: {score}',
+  estimatedYieldLabel: 'Estimated Yield: {yieldKWh} kWh/year',
+  savingsLabel: 'Estimated Savings: €{savingsEuro}/year',
+  assessmentLabel: 'Assessment',
+  excellentPotential: 'Excellent potential for solar!',
+  moderatePotential: 'Moderate potential',
+  limitedPotential: 'Limited potential',
 };
 
 export default en;

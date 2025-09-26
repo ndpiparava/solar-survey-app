@@ -62,6 +62,13 @@ const de: Record<string, string> = {
   info: 'Information',
   warning: 'Warnung',
   danger: 'Gefahr',
+  scoreLabel: 'Punktzahl: {score}',
+  estimatedYieldLabel: 'Geschätzter Ertrag: {yieldKWh} kWh/Jahr',
+  savingsLabel: 'Geschätzte Einsparungen: €{savingsEuro}/Jahr',
+  assesmentLabel: 'Bewertung',
+  excellentPotential: 'Ausgezeichnetes Potenzial für Solarenergie!',
+  moderatePotential: 'Mäßiges Potenzial',
+  limitedPotential: 'Begrenztes Potenzial',
 };
 
 export default de;

@@ -11,6 +11,7 @@ export const theme = {
     spinnerTrack: '#E5E7EB',
     spinner: '#3B82F6',
     success: '#10B981',
+    satisfactory: '#6EE7B7',
     warning: '#F59E0B',
     info: '#6366F1',
   },

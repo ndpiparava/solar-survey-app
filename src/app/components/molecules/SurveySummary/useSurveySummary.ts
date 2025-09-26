@@ -1,11 +1,13 @@
 import {useTheme} from '@emotion/react';
 import {SurveyDataType} from '@solar/app/shared/types/survey';
+import {getAssessment} from '@solar/app/utils/assessment';
 import {useMemo} from 'react';
 import {useIntl} from 'react-intl';
 
 const useSurveySummary = (form: SurveyDataType) => {
   const intl = useIntl();
   const theme = useTheme();
+  const assessment = getAssessment(form, intl);
   const fieldConfigs = useMemo(
     () => ({
       propertyType: {
@@ -35,7 +37,7 @@ const useSurveySummary = (form: SurveyDataType) => {
     [theme, intl, form.otherEnergy],
   );
 
-  return {fieldConfigs, intl};
+  return {fieldConfigs, intl, assessment};
 };
 
 export default useSurveySummary;

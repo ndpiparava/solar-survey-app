@@ -16,6 +16,7 @@ declare module '@emotion/react' {
       success: string;
       info: string;
       warning: string;
+      satisfactory: string;
     };
     fonts: {
       body: string;

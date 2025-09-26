@@ -31,4 +31,11 @@ export type SurveyDataType = {
   contact?: ContactInfo;
 };
 
+export type AssessmentResult = {
+  score: number; // 0–100
+  yieldKWh: number;
+  savingsEuro: number;
+  message: string;
+};
+
 export type SurveyDataKeyType = Exclude<keyof SurveyDataType, 'contact'>;
