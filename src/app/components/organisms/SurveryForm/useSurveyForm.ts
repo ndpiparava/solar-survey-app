@@ -15,7 +15,6 @@ const useSurveyForm = () => {
     watch,
     setError,
     setValue,
-
     formState: {errors, isSubmitting},
   } = useForm<SurveyFormWithError>({
     defaultValues: {
@@ -66,6 +65,7 @@ const useSurveyForm = () => {
 
   return {
     intl,
+    setValue,
     control,
     formValues,
     handleSubmit,

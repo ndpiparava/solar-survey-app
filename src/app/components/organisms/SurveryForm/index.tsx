@@ -18,10 +18,12 @@ import {
 } from '@solar/app/shared/constants/surveyFormData';
 import useSurveyForm from './useSurveyForm';
 import SurveySummary from '../../molecules/SurveySummary';
+import {ContactInfo} from '@solar/app/shared/types/survey';
 
 export default function SurveyForm() {
   const {
     intl,
+    setValue,
     control,
     formValues,
     handleSubmit,
@@ -34,9 +36,9 @@ export default function SurveyForm() {
 
   if (submissionState) {
     return (
-      <FormWrapper>
+      
         <SurveySummary form={formValues} />
-      </FormWrapper>
+      
     );
   }
 
@@ -159,7 +161,12 @@ export default function SurveyForm() {
       {errors._form && <ErrorMsg>{errors._form.message}</ErrorMsg>}
 
       {/* Contact Form */}
-      <ContactForm contactForm={formValues.contact} setForm={() => {}} />
+      <ContactForm
+        contactForm={formValues.contact}
+        setForm={(updatedContact: ContactInfo) =>
+          setValue('contact', updatedContact)
+        }
+      />
 
       <LoadingButton
         type="submit"
@@ -191,7 +198,6 @@ const ErrorMsg = styled.p`
   font-weight: ${({theme}) => theme.fontWeights.bold};
   font-size: ${({theme}) => theme.fontSizes.base};
   background-color: ${({theme}) => theme.colors.background};
-  padding: ${({theme}) => theme.spacing(2)};
   border-radius: ${({theme}) => theme.radii.md};
 `;
 

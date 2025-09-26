@@ -1,6 +1,6 @@
 'use client';
 
-import {ContactInfo, SurveyDataType} from '@solar/app/shared/types/survey';
+import {ContactInfo} from '@solar/app/shared/types/survey';
 import styled from '@emotion/styled';
 import {useIntl} from 'react-intl';
 import {memo} from 'react';
@@ -8,7 +8,7 @@ import TextInput from '../../atoms/TextInput';
 
 type ContactFormProps = {
   contactForm?: ContactInfo;
-  setForm: React.Dispatch<React.SetStateAction<SurveyDataType>>;
+  setForm: (updatedContact: ContactInfo) => void;
 };
 
 const contactFields = [
@@ -46,10 +46,10 @@ const ContactForm = ({contactForm, setForm}: ContactFormProps) => {
           type={type}
           value={contactForm?.[key] || ''}
           onChange={e =>
-            setForm(prev => ({
-              ...prev,
-              contact: {...prev.contact, [key]: e.target.value},
-            }))
+            setForm({
+              ...contactForm,
+              [key]: e.target.value,
+            })
           }
         />
       ))}
