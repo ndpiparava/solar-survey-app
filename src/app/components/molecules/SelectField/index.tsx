@@ -8,17 +8,22 @@ type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   children: ReactNode;
   fieldType: SurveyDataKeyType;
+  required?: boolean;
 };
 
 const SelectField = ({
   label,
   fieldType,
+  required = false,
   children,
   ...props
 }: SelectFieldProps) => {
   return (
     <div>
-      <InputLabel fieldType={fieldType}>{label}</InputLabel>
+      <LabelWrapper>
+        {required && <RequiredMark>*</RequiredMark>}
+        <InputLabel fieldType={fieldType}>{label}</InputLabel>
+      </LabelWrapper>
       <StyledSelect {...props}>{children}</StyledSelect>
     </div>
   );
@@ -35,4 +40,15 @@ const StyledSelect = styled.select`
   box-sizing: border-box;
   background-color: ${({theme}) => theme.colors.background};
   color: ${({theme}) => theme.colors.text};
+`;
+
+const RequiredMark = styled.span`
+  color: ${({theme}) => theme.colors.danger};
+  margin-left: 0.25rem;
+`;
+
+const LabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({theme}) => theme.spacing(1)};
 `;

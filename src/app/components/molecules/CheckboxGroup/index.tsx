@@ -9,24 +9,35 @@ export type Option<T> = {
 
 type CheckboxGroupProps<T> = {
   label: string;
-  options: Option<T>[];
+  options: {value: T; label: string}[];
   selected: T[];
-  onChange: (value: T) => void;
+  onChange: (selected: T[]) => void;
+  required?: boolean;
 };
 
 const CheckboxGroupInner = <T extends string | number>(
-  {label, options, selected, onChange}: CheckboxGroupProps<T>,
+  {label, options, selected, onChange, required = false}: CheckboxGroupProps<T>,
   ref: React.Ref<HTMLDivElement>,
 ) => {
+  const handleCheckboxClick = (value: T) => {
+    const updated = selected.includes(value)
+      ? selected.filter(v => v !== value)
+      : [...selected, value];
+    onChange(updated); // update parent via Controller
+  };
+
   return (
     <Field ref={ref}>
-      <InputLabel fieldType="roofOrientation">{label}</InputLabel>
+      <LabelWrapper>
+        {required && <RequiredMark>*</RequiredMark>}
+        <InputLabel fieldType="roofOrientation">{label}</InputLabel>
+      </LabelWrapper>
       {options.map(option => (
         <CheckboxWrapper key={option.value.toString()}>
           <input
             type="checkbox"
             checked={selected.includes(option.value)}
-            onChange={() => onChange(option.value)}
+            onChange={() => handleCheckboxClick(option.value)}
           />
           <span>{option.label}</span>
         </CheckboxWrapper>
@@ -53,4 +64,15 @@ const CheckboxWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: ${({theme}) => theme.spacing(2)};
+`;
+
+const RequiredMark = styled.span`
+  color: ${({theme}) => theme.colors.danger};
+  margin-left: 0.25rem;
+`;
+
+const LabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({theme}) => theme.spacing(1)};
 `;

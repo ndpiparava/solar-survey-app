@@ -1,35 +1,37 @@
 'use client';
 
-import {useState, ChangeEvent, useMemo, useCallback} from 'react';
-import {RoofOrientation, SurveyDataType} from '@solar/app/shared/types/survey';
+import {useMemo, useEffect, useState} from 'react';
+import {SurveyDataType} from '@solar/app/shared/types/survey';
 
-import useSurveyFormValidation from './useSurveyFormValidation';
 import {useIntl} from 'react-intl';
 import {roofOrientations} from '@solar/app/shared/constants/surveyFormData';
+import {useForm} from 'react-hook-form';
+type SurveyFormWithError = SurveyDataType & {_form?: string};
 
 const useSurveyForm = () => {
-  const [form, setForm] = useState<SurveyDataType>({
-    propertyType: 'Single-family home',
-    roofOrientation: [],
-    roofAge: 'Under 5 years',
-    electricityUsage: 'Under 3,000 kWh',
-    otherEnergy: 'No',
+  const {
+    handleSubmit,
+    control,
+    watch,
+    setError,
+    setValue,
+
+    formState: {errors, isSubmitting},
+  } = useForm<SurveyFormWithError>({
+    defaultValues: {
+      propertyType: 'Single-family home',
+      roofOrientation: [],
+      roofAge: 'Under 5 years',
+      electricityUsage: 'Under 3,000 kWh',
+      otherEnergy: 'No',
+      contact: {},
+      _form: undefined,
+    },
   });
 
-  const {isValidForm} = useSurveyFormValidation();
-
-  const [error, setError] = useState<string>('');
-  const [submitted, setSubmitted] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const formValues = watch();
   const intl = useIntl();
-
-  const handleChange = useCallback(
-    (field: string, event: ChangeEvent<HTMLSelectElement>) => {
-      setForm(prev => ({...prev, [field]: event.target.value}));
-    },
-    [],
-  );
+  const [submissionState, setSubmissionState] = useState<boolean>(false);
 
   const roofOrientationFormOptions = useMemo(() => {
     return roofOrientations.map(o => ({
@@ -40,59 +42,38 @@ const useSurveyForm = () => {
     }));
   }, [intl]);
 
-  const handleCheckboxChange = useCallback((value: RoofOrientation) => {
-    setForm(prev => {
-      const current = prev.roofOrientation;
-      return current.includes(value)
-        ? {...prev, roofOrientation: current.filter(v => v !== value)}
-        : {...prev, roofOrientation: [...current, value]};
-    });
-  }, []);
+  useEffect(() => {
+    // Initialize the checkbox field to an empty array
+    setValue('roofOrientation', []);
+  }, [setValue]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isValidForm(form)) {
-      setError('Please answer all mandatory questions correctly.');
-      return;
-    }
-
-    setError('');
-    setLoading(true);
-
+  const onSubmit = async () => {
     try {
       const res = await fetch('/api/submit', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(form),
+        body: JSON.stringify(formValues),
       });
       const data = await res.json();
       if (data.status === 'success') {
-        setResult(data.answer); // 'Yes' or 'No' from API
-        setSubmitted(true);
-      } else {
-        setError('Submission failed. Try again.');
+        setSubmissionState(true);
       }
     } catch (err) {
       console.error(err);
-      setError('An error occurred.');
-    } finally {
-      setLoading(false);
+      setError('_form', {type: 'manual', message: 'API submission failed.'});
     }
   };
 
   return {
     intl,
-    form,
-    setForm,
-    error,
-    submitted,
-    result,
-    loading,
-    handleChange,
-    handleCheckboxChange,
+    control,
+    formValues,
     handleSubmit,
+    onSubmit,
+    errors,
+    isSubmitting,
     roofOrientationFormOptions,
+    submissionState,
   };
 };
 

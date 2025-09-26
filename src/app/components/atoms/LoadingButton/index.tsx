@@ -16,7 +16,7 @@ const LoadingButton = ({
   ...props
 }: LoadingButtonProps) => {
   return (
-    <Button disabled={loading} {...props}>
+    <Button disabled={loading} {...props} type="submit">
       {loading ? <Spinner /> : label}
     </Button>
   );

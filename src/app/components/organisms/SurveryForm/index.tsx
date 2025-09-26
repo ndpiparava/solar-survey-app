@@ -1,107 +1,174 @@
 'use client';
 
+import styled from '@emotion/styled';
+import {Controller} from 'react-hook-form';
+
+import SelectField from '../../molecules/SelectField';
+import SelectOptions from '../../atoms/SelectOptions';
+import CheckboxGroup from '../../molecules/CheckboxGroup';
+import ContactForm from '../ContactForm';
+import LoadingButton from '../../atoms/LoadingButton';
+import LanguageSwitch from '../../molecules/LanguageSwitch';
+
 import {
-  otherEnergyOptions,
   propertyOptions,
   roofAgeOptions,
   electricityOptions,
+  otherEnergyOptions,
 } from '@solar/app/shared/constants/surveyFormData';
-import styled from '@emotion/styled';
-
-import ContactForm from '../ContactForm';
-import SurveySummary from '../../molecules/SurveySummary';
-import CheckboxGroup from '../../molecules/CheckboxGroup';
 import useSurveyForm from './useSurveyForm';
-import SelectField from '../../molecules/SelectField';
-import LoadingButton from '../../atoms/LoadingButton';
-import SelectOptions from '../../atoms/SelectOptions';
-import LanguageSwitch from '../../molecules/LanguageSwitch';
+import SurveySummary from '../../molecules/SurveySummary';
 
-const SurveyForm = () => {
+export default function SurveyForm() {
   const {
     intl,
-    form,
-    setForm,
-    error,
-    handleChange,
-    handleCheckboxChange,
+    control,
+    formValues,
     handleSubmit,
-    loading,
-    submitted,
+    onSubmit,
+    errors,
+    isSubmitting,
+    submissionState,
     roofOrientationFormOptions,
   } = useSurveyForm();
 
-  if (submitted) {
-    return <SurveySummary form={form} />;
+  if (submissionState) {
+    return (
+      <FormWrapper>
+        <SurveySummary form={formValues} />
+      </FormWrapper>
+    );
   }
 
   return (
-    <FormWrapper onSubmit={handleSubmit}>
+    <FormWrapper onSubmit={handleSubmit(onSubmit)}>
       <LanguageSwitch options={['en', 'de']} />
       <Title>{intl.formatMessage({id: 'app.survey.question'})}</Title>
-      <Section>
-        <SelectField
-          fieldType={'propertyType'}
-          label={intl.formatMessage({id: 'form.propertyType.label'})}
-          value={form.propertyType}
-          onChange={e => handleChange('propertyType', e)}>
-          <SelectOptions options={propertyOptions} intl={intl} />
-        </SelectField>
-      </Section>
 
+      {/* Property Type */}
       <Section>
-        <CheckboxGroup
-          label={intl.formatMessage({id: 'form.roofOrientation.label'})}
-          options={roofOrientationFormOptions}
-          selected={form.roofOrientation}
-          onChange={handleCheckboxChange}
+        <Controller
+          name="propertyType"
+          control={control}
+          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
+          render={({field}) => (
+            <SelectField
+              required
+              fieldType="propertyType"
+              label={intl.formatMessage({id: 'form.propertyType.label'})}
+              value={field.value}
+              onChange={field.onChange}>
+              <SelectOptions options={propertyOptions} intl={intl} />
+            </SelectField>
+          )}
         />
+        {errors.propertyType && (
+          <ErrorMsg>{errors.propertyType.message}</ErrorMsg>
+        )}
       </Section>
 
+      {/* Roof Orientation */}
+      <Controller
+        name="roofOrientation"
+        control={control}
+        defaultValue={[]}
+        rules={{
+          validate: (values: string[]) =>
+            values.length > 0 ||
+            intl.formatMessage({id: 'form.error.mandatory'}),
+        }}
+        render={({field}) => (
+          <CheckboxGroup
+            required
+            label={intl.formatMessage({id: 'form.roofOrientation.label'})}
+            options={roofOrientationFormOptions}
+            selected={field.value || []}
+            onChange={field.onChange}
+          />
+        )}
+      />
+
+      {errors.roofOrientation && (
+        <ErrorMsg>{errors.roofOrientation.message}</ErrorMsg>
+      )}
+
+      {/* Roof Age */}
       <Section>
-        <SelectField
-          fieldType="roofAge"
-          label={intl.formatMessage({id: 'form.roofAge.label'})}
-          value={form.roofAge}
-          onChange={e => handleChange('roofAge', e)}>
-          <SelectOptions options={roofAgeOptions} intl={intl} />
-        </SelectField>
+        <Controller
+          name="roofAge"
+          control={control}
+          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
+          render={({field}) => (
+            <SelectField
+              required
+              fieldType="roofAge"
+              label={intl.formatMessage({id: 'form.roofAge.label'})}
+              value={field.value}
+              onChange={field.onChange}>
+              <SelectOptions options={roofAgeOptions} intl={intl} />
+            </SelectField>
+          )}
+        />
+        {errors.roofAge && <ErrorMsg>{errors.roofAge.message}</ErrorMsg>}
       </Section>
 
+      {/* Electricity Usage */}
       <Section>
-        <SelectField
-          fieldType="electricityUsage"
-          label={intl.formatMessage({id: 'form.electricityUsage.label'})}
-          value={form.electricityUsage}
-          onChange={e => handleChange('electricityUsage', e)}>
-          <SelectOptions options={electricityOptions} intl={intl} />
-        </SelectField>
+        <Controller
+          name="electricityUsage"
+          control={control}
+          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
+          render={({field}) => (
+            <SelectField
+              required
+              fieldType="electricityUsage"
+              label={intl.formatMessage({id: 'form.electricityUsage.label'})}
+              value={field.value}
+              onChange={field.onChange}>
+              <SelectOptions options={electricityOptions} intl={intl} />
+            </SelectField>
+          )}
+        />
+        {errors.electricityUsage && (
+          <ErrorMsg>{errors.electricityUsage.message}</ErrorMsg>
+        )}
       </Section>
 
+      {/* Other Energy */}
       <Section>
-        <SelectField
-          fieldType="otherEnergy"
-          label={intl.formatMessage({id: 'form.otherEnergy.label'})}
-          value={form.otherEnergy}
-          onChange={e => handleChange('otherEnergy', e)}>
-          <SelectOptions options={otherEnergyOptions} intl={intl} />
-        </SelectField>
+        <Controller
+          name="otherEnergy"
+          control={control}
+          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
+          render={({field}) => (
+            <SelectField
+              required
+              fieldType="otherEnergy"
+              label={intl.formatMessage({id: 'form.otherEnergy.label'})}
+              value={field.value}
+              onChange={field.onChange}>
+              <SelectOptions options={otherEnergyOptions} intl={intl} />
+            </SelectField>
+          )}
+        />
+        {errors.otherEnergy && (
+          <ErrorMsg>{errors.otherEnergy.message}</ErrorMsg>
+        )}
       </Section>
 
-      <ContactForm contactForm={form.contact} setForm={setForm} />
+      {errors._form && <ErrorMsg>{errors._form.message}</ErrorMsg>}
 
-      {error && <ErrorMsg>{error}</ErrorMsg>}
+      {/* Contact Form */}
+      <ContactForm contactForm={formValues.contact} setForm={() => {}} />
 
       <LoadingButton
         type="submit"
-        loading={loading}
+        loading={isSubmitting}
         label={intl.formatMessage({id: 'button.submit'})}
       />
     </FormWrapper>
   );
-};
-
-export default SurveyForm;
+}
 
 const FormWrapper = styled.form`
   display: flex;
@@ -127,6 +194,7 @@ const ErrorMsg = styled.p`
   padding: ${({theme}) => theme.spacing(2)};
   border-radius: ${({theme}) => theme.radii.md};
 `;
+
 const Title = styled.h2`
   font-size: ${({theme}) => theme.fontSizes.xl};
   font-weight: ${({theme}) => theme.fontWeights.bold};
