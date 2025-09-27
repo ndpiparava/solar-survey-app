@@ -1,9 +1,24 @@
 import {SurveyDataType} from '@solar/app/shared/types/survey';
-import {
-  surveyFormAllowedValues,
-  validateFormField,
-} from '@solar/app/shared/validation/surveyValidation';
+import {surveyFormAllowedValues} from '@solar/app/shared/validation/surveyValidation';
 import {NextRequest, NextResponse} from 'next/server';
+
+const validateFormField = <T>(
+  value: T | T[],
+  allowedValues: T[],
+  required = true,
+) => {
+  if (Array.isArray(value)) {
+    return required
+      ? value.length > 0 && value.every(v => allowedValues.includes(v))
+      : true;
+  }
+  if (typeof value === 'string') {
+    return required
+      ? value.trim() !== '' && allowedValues.includes(value as T)
+      : true;
+  }
+  return false;
+};
 
 export async function POST(req: NextRequest) {
   const data: SurveyDataType = await req.json();

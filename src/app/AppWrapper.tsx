@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const AppWrapper = ({children}: {children: React.ReactNode}) => {
-  const language = useLocaleStore(state => state.language);
+  const language = useLocaleStore(state => state.language) || 'en';
   return (
     <IntlProvider messages={translations[language]} locale={language}>
       <ThemeProvider theme={theme}>

@@ -1,4 +1,4 @@
-export type Option<T extends string> = {value: T; labelId: string};
+export type FormFieldOption<T extends string> = {value: T; labelId: string};
 export type PropertyType =
   | 'Single-family home'
   | 'Multi-family home'
@@ -39,3 +39,11 @@ export type AssessmentResult = {
 };
 
 export type SurveyDataKeyType = Exclude<keyof SurveyDataType, 'contact'>;
+
+export type SurveyFieldOptionMap = {
+  propertyType: FormFieldOption<PropertyType>[];
+  roofAge: FormFieldOption<RoofAge>[];
+  electricityUsage: FormFieldOption<ElectricityUsage>[];
+  otherEnergy: FormFieldOption<OtherEnergy>[];
+  roofOrientation: FormFieldOption<RoofOrientation>[];
+};

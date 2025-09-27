@@ -15,15 +15,21 @@ import {
   roofAgeOptions,
   electricityOptions,
   otherEnergyOptions,
-} from '@solar/app/shared/constants/surveyFormData';
+} from '@solar/app/shared/data/surveyFormData';
 import useSurveyForm from './useSurveyForm';
 import SurveySummary from '../../molecules/SurveySummary';
-import {ContactInfo} from '@solar/app/shared/types/survey';
+import {
+  SurveyDataKeyType,
+  SurveyFieldOptionMap,
+} from '@solar/app/shared/types/survey';
+import {
+  validateContact,
+  validateFormSelectField,
+} from '@solar/app/shared/validation/surveyValidation';
 
 export default function SurveyForm() {
   const {
     intl,
-    setValue,
     control,
     formValues,
     handleSubmit,
@@ -35,12 +41,37 @@ export default function SurveyForm() {
   } = useSurveyForm();
 
   if (submissionState) {
-    return (
-      
-        <SurveySummary form={formValues} />
-      
-    );
+    return <SurveySummary form={formValues} />;
   }
+
+  const renderSelectField = <K extends keyof SurveyFieldOptionMap>(
+    name: SurveyDataKeyType,
+    fieldType: SurveyDataKeyType,
+    labelId: string,
+    options: SurveyFieldOptionMap[K],
+  ) => (
+    <Section>
+      <Controller
+        name={name}
+        control={control}
+        rules={{
+          required: intl.formatMessage({id: 'form.error.mandatory'}),
+          validate: value => validateFormSelectField(value, options),
+        }}
+        render={({field}) => (
+          <SelectField
+            required
+            fieldType={fieldType}
+            label={intl.formatMessage({id: labelId})}
+            value={field.value}
+            onChange={field.onChange}>
+            <SelectOptions options={options} intl={intl} />
+          </SelectField>
+        )}
+      />
+      {errors[name] && <ErrorMsg>{errors[name]?.message}</ErrorMsg>}
+    </Section>
+  );
 
   return (
     <FormWrapper onSubmit={handleSubmit(onSubmit)}>
@@ -49,21 +80,12 @@ export default function SurveyForm() {
 
       {/* Property Type */}
       <Section>
-        <Controller
-          name="propertyType"
-          control={control}
-          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
-          render={({field}) => (
-            <SelectField
-              required
-              fieldType="propertyType"
-              label={intl.formatMessage({id: 'form.propertyType.label'})}
-              value={field.value}
-              onChange={field.onChange}>
-              <SelectOptions options={propertyOptions} intl={intl} />
-            </SelectField>
-          )}
-        />
+        {renderSelectField(
+          'propertyType',
+          'propertyType',
+          'form.propertyType.label',
+          propertyOptions,
+        )}
         {errors.propertyType && (
           <ErrorMsg>{errors.propertyType.message}</ErrorMsg>
         )}
@@ -96,41 +118,23 @@ export default function SurveyForm() {
 
       {/* Roof Age */}
       <Section>
-        <Controller
-          name="roofAge"
-          control={control}
-          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
-          render={({field}) => (
-            <SelectField
-              required
-              fieldType="roofAge"
-              label={intl.formatMessage({id: 'form.roofAge.label'})}
-              value={field.value}
-              onChange={field.onChange}>
-              <SelectOptions options={roofAgeOptions} intl={intl} />
-            </SelectField>
-          )}
-        />
+        {renderSelectField(
+          'roofAge',
+          'roofAge',
+          'form.roofAge.label',
+          roofAgeOptions,
+        )}
         {errors.roofAge && <ErrorMsg>{errors.roofAge.message}</ErrorMsg>}
       </Section>
 
       {/* Electricity Usage */}
       <Section>
-        <Controller
-          name="electricityUsage"
-          control={control}
-          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
-          render={({field}) => (
-            <SelectField
-              required
-              fieldType="electricityUsage"
-              label={intl.formatMessage({id: 'form.electricityUsage.label'})}
-              value={field.value}
-              onChange={field.onChange}>
-              <SelectOptions options={electricityOptions} intl={intl} />
-            </SelectField>
-          )}
-        />
+        {renderSelectField(
+          'electricityUsage',
+          'electricityUsage',
+          'form.electricityUsage.label',
+          electricityOptions,
+        )}
         {errors.electricityUsage && (
           <ErrorMsg>{errors.electricityUsage.message}</ErrorMsg>
         )}
@@ -138,35 +142,30 @@ export default function SurveyForm() {
 
       {/* Other Energy */}
       <Section>
-        <Controller
-          name="otherEnergy"
-          control={control}
-          rules={{required: intl.formatMessage({id: 'form.error.mandatory'})}}
-          render={({field}) => (
-            <SelectField
-              required
-              fieldType="otherEnergy"
-              label={intl.formatMessage({id: 'form.otherEnergy.label'})}
-              value={field.value}
-              onChange={field.onChange}>
-              <SelectOptions options={otherEnergyOptions} intl={intl} />
-            </SelectField>
-          )}
-        />
+        {renderSelectField(
+          'otherEnergy',
+          'otherEnergy',
+          'form.otherEnergy.label',
+          otherEnergyOptions,
+        )}
         {errors.otherEnergy && (
           <ErrorMsg>{errors.otherEnergy.message}</ErrorMsg>
         )}
       </Section>
-
       {errors._form && <ErrorMsg>{errors._form.message}</ErrorMsg>}
 
       {/* Contact Form */}
-      <ContactForm
-        contactForm={formValues.contact}
-        setForm={(updatedContact: ContactInfo) =>
-          setValue('contact', updatedContact)
-        }
+      <Controller
+        name="contact"
+        control={control}
+        rules={{
+          validate: validateContact,
+        }}
+        render={({field}) => (
+          <ContactForm contactForm={field.value} setForm={field.onChange} />
+        )}
       />
+      {errors.contact && <ErrorMsg>{errors.contact.message}</ErrorMsg>}
 
       <LoadingButton
         type="submit"

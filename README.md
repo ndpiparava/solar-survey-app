@@ -5,8 +5,8 @@ The app uses **Atomic Design** for component structure, **Emotion** for styling 
 
 ---
 
+![Demo video](./src/app/assets/solar.gif 'demo')
 
-![Demo video](./src/app/assets/solar.gif "demo") 
 ## Project Structure
 
 - **app/** – Next.js App Router pages and layouts.

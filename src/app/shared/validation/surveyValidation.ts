@@ -1,34 +1,46 @@
+import {isValidString} from '@solar/app/utils/string';
 import {
   propertyOptions,
   roofOrientations,
   roofAgeOptions,
   electricityOptions,
   otherEnergyOptions,
-} from '../constants/surveyFormData';
+} from '../data/surveyFormData';
 import {
   PropertyType,
   RoofOrientation,
   RoofAge,
   ElectricityUsage,
   OtherEnergy,
+  SurveyDataType,
+  SurveyFieldOptionMap,
 } from '../types/survey';
 
-export const validateFormField = <T>(
-  value: T | T[],
-  allowedValues: T[],
+export const validateContact = (contact?: SurveyDataType['contact']) => {
+  if (!contact) return true;
+  return (
+    isValidString(contact.email, true, /^[^\s@]+@[^\s@]+\.[^\s@]+$/) &&
+    isValidString(contact.phone, true, /^\+?[0-9\s\-]{7,15}$/) &&
+    isValidString(contact.name, true, /^[A-Za-z\s'-]{1,50}$/)
+  );
+};
+
+export const validateFormSelectField = (
+  value:
+    | SurveyDataType[keyof Omit<SurveyDataType, 'contact'>]
+    | SurveyDataType[keyof Omit<SurveyDataType, 'contact'>][],
+  allowedOptions: SurveyFieldOptionMap[keyof SurveyFieldOptionMap],
   required = true,
 ) => {
-  if (Array.isArray(value)) {
-    return required
-      ? value.length > 0 && value.every(v => allowedValues.includes(v))
-      : true;
-  }
-  if (typeof value === 'string') {
-    return required
-      ? value.trim() !== '' && allowedValues.includes(value as T)
-      : true;
-  }
-  return false;
+  const values = (Array.isArray(value) ? value : [value]).map(v =>
+    typeof v === 'object' && 'value' in v ? v.value : v,
+  );
+
+  const allowedValues = allowedOptions.map(opt => opt.value);
+
+  if (required && values.length === 0) return false;
+
+  return values.every(v => allowedValues.includes(v));
 };
 
 export const getAllowedValues = <T>(options: {value: T}[]): T[] =>
@@ -41,3 +53,5 @@ export const surveyFormAllowedValues = {
   electricityUsage: getAllowedValues<ElectricityUsage>(electricityOptions),
   otherEnergy: getAllowedValues<OtherEnergy>(otherEnergyOptions),
 };
+
+export type SurveyFormAllowedValuesType = typeof surveyFormAllowedValues;

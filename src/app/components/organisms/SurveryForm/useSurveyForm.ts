@@ -4,7 +4,7 @@ import {useMemo, useEffect, useState} from 'react';
 import {SurveyDataType} from '@solar/app/shared/types/survey';
 
 import {useIntl} from 'react-intl';
-import {roofOrientations} from '@solar/app/shared/constants/surveyFormData';
+import {roofOrientations} from '@solar/app/shared/data/surveyFormData';
 import {useForm} from 'react-hook-form';
 type SurveyFormWithError = SurveyDataType & {_form?: string};
 
