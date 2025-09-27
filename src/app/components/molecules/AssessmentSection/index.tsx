@@ -35,7 +35,7 @@ const AssessmentSection = ({assessment}: AssessmentProps) => {
 
   return (
     <Container>
-      <Title>Assessment</Title>
+      <Title>{intl.formatMessage({id: 'assessmentLabel'})}</Title>
       <Message score={assessment.score} color={scoreColor()}>
         {assessment.message}
       </Message>
