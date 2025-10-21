@@ -23,8 +23,6 @@ const validateFormField = <T>(
 export async function POST(req: NextRequest) {
   const data: SurveyDataType = await req.json();
 
-  console.log('Request body:', data);
-
   //Validation
   const isValid =
     validateFormField(
@@ -41,8 +39,6 @@ export async function POST(req: NextRequest) {
       surveyFormAllowedValues.electricityUsage,
     ) &&
     validateFormField(data.otherEnergy, surveyFormAllowedValues.otherEnergy);
-
-  console.log('Validation:', isValid);
 
   if (!isValid) {
     return NextResponse.json(

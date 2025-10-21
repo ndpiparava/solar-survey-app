@@ -32,11 +32,14 @@ export const validateFormSelectField = (
   allowedOptions: SurveyFieldOptionMap[keyof SurveyFieldOptionMap],
   required = true,
 ) => {
-  const values = (Array.isArray(value) ? value : [value]).map(v =>
-    typeof v === 'object' && 'value' in v ? v.value : v,
-  );
+ const values = (Array.isArray(value) ? value : [value]).map(v => {
+  if (typeof v === 'object' && v !== null && 'value' in v) {
+    return String((v as { value: string | number }).value);
+  }
+  return String(v);
+});
 
-  const allowedValues = allowedOptions.map(opt => opt.value);
+  const allowedValues = allowedOptions.map(opt => opt.value as string);
 
   if (required && values.length === 0) return false;
 

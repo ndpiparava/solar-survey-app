@@ -1,10 +1,10 @@
 'use client';
-import {Option} from '@solar/app/shared/types/survey';
+import {FormFieldOption} from '@solar/app/shared/types/survey';
 import {memo} from 'react';
 import {IntlShape} from 'react-intl';
 
 type SelectOptionsProps<T extends string> = {
-  options: Option<T>[];
+  options: FormFieldOption<T>[];
   intl: IntlShape;
 };
 

@@ -4,10 +4,10 @@ import {
   RoofAge,
   ElectricityUsage,
   OtherEnergy,
-  Option,
+  FormFieldOption,
 } from '../types/survey';
 
-export const roofOrientations: Option<RoofOrientation>[] = [
+export const roofOrientations: FormFieldOption<RoofOrientation>[] = [
   {value: 'South', labelId: 'south'},
   {value: 'West', labelId: 'west'},
   {value: 'East', labelId: 'east'},
@@ -15,7 +15,7 @@ export const roofOrientations: Option<RoofOrientation>[] = [
   {value: 'No answer', labelId: 'noAnswer'},
 ];
 
-export const propertyOptions: Option<PropertyType>[] = [
+export const propertyOptions: FormFieldOption<PropertyType>[] = [
   {
     value: 'Single-family home',
     labelId: 'form.propertyType.option.singleFamily',
@@ -27,14 +27,14 @@ export const propertyOptions: Option<PropertyType>[] = [
   },
 ];
 
-export const roofAgeOptions: Option<RoofAge>[] = [
+export const roofAgeOptions: FormFieldOption<RoofAge>[] = [
   {value: 'Under 5 years', labelId: 'form.roofAge.option.under5'},
   {value: '5–15 years', labelId: 'form.roofAge.option.5to15'},
   {value: 'Over 15 years', labelId: 'form.roofAge.option.over15'},
   {value: 'Not specified', labelId: 'form.roofAge.option.notSpecified'},
 ];
 
-export const electricityOptions: Option<ElectricityUsage>[] = [
+export const electricityOptions: FormFieldOption<ElectricityUsage>[] = [
   {value: 'Under 3,000 kWh', labelId: 'form.electricityUsage.option.under3000'},
   {
     value: '3,000–5,000 kWh',
@@ -47,7 +47,7 @@ export const electricityOptions: Option<ElectricityUsage>[] = [
   },
 ];
 
-export const otherEnergyOptions: Option<OtherEnergy>[] = [
+export const otherEnergyOptions: FormFieldOption<OtherEnergy>[] = [
   {value: 'Yes', labelId: 'form.otherEnergy.option.yes'},
   {value: 'No', labelId: 'form.otherEnergy.option.no'},
   {value: "Don't know", labelId: 'form.otherEnergy.option.dontKnow'},
