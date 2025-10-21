@@ -15,7 +15,7 @@ const useSurveyForm = () => {
     watch,
     setError,
     setValue,
-    formState: {errors, isSubmitting},
+    formState: {errors, isSubmitting, isSubmitSuccessful},
   } = useForm<SurveyFormWithError>({
     defaultValues: {
       propertyType: 'Single-family home',
@@ -30,7 +30,7 @@ const useSurveyForm = () => {
 
   const formValues = watch();
   const intl = useIntl();
-  const [submissionState, setSubmissionState] = useState<boolean>(false);
+ 
 
   const roofOrientationFormOptions = useMemo(() => {
     return roofOrientations.map(o => ({
@@ -41,11 +41,6 @@ const useSurveyForm = () => {
     }));
   }, [intl]);
 
-  useEffect(() => {
-    // Initialize the checkbox field to an empty array
-    setValue('roofOrientation', []);
-  }, [setValue]);
-
   const onSubmit = async () => {
     try {
       const res = await fetch('/api/submit', {
@@ -53,10 +48,9 @@ const useSurveyForm = () => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formValues),
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const data = await res.json();
-      if (data.status === 'success') {
-        setSubmissionState(true);
-      }
+      // Handle success response if needed
     } catch (err) {
       console.error(err);
       setError('_form', {type: 'manual', message: 'API submission failed.'});
@@ -73,7 +67,7 @@ const useSurveyForm = () => {
     errors,
     isSubmitting,
     roofOrientationFormOptions,
-    submissionState,
+    submissionState:isSubmitSuccessful,
   };
 };
 
